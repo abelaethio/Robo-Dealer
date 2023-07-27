@@ -1,13 +1,78 @@
+<!-- HTML template for displaying the hand -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Card Dealing Program</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Robo Dealer</title>
+  <style>
+    html {
+        text-align: center;
+        padding-top: 100px;
+        background-color: 	red;
+        color:white;
+        font-family:'Courier New', Courier, monospace
+    }
+  </style>
 </head>
 <body>
-  <h1>Card Dealing Program</h1>
+  <h1>Robo Dealer</h1>
   <div id="hand"></div>
-  <button id="dealButton">Deal Hand</button>
-  <script src="script.js"></script>
+  <button id="dealButton">Deal a Hand</button>
+
+  <script>
+    // Card object definition
+    function Card(value, suit) {
+      this.value = value;
+      this.suit = suit;
+    }
+
+    // Function to generate a deck of cards
+    function generateDeck() {
+      const suits = ['Hearts', 'Spades', 'Diamonds', 'Clubs'];
+      const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
+
+      const deck = [];
+      for (let suit of suits) {
+        for (let value of values) {
+          deck.push(new Card(value, suit));
+        }
+      }
+      return deck;
+    }
+
+    // Function to randomly select 5 cards from the deck
+    function drawHand(deck) {
+      const hand = [];
+      while (hand.length < 5) {
+        const index = Math.floor(Math.random() * deck.length);
+        hand.push(deck[index]);
+        deck.splice(index, 1);
+      }
+      return hand;
+    }
+
+    // Function to display the hand on the HTML page
+    function displayHand(hand) {
+      const handElement = document.getElementById('hand');
+      handElement.innerHTML = ''; // Clear the currently-displayed hand
+
+      for (let card of hand) {
+        const cardValue = card.value === '10' ? card.value : card.value[0];
+        const cardSuit = card.suit[0].toUpperCase() + card.suit.slice(1);
+        const cardText = `${cardValue} of ${cardSuit}`;
+        const cardItem = document.createElement('p');
+        cardItem.textContent = cardText;
+        handElement.appendChild(cardItem);
+      }
+    }
+
+    // Event listener for the "Deal a Hand" button
+    document.getElementById('dealButton').addEventListener('click', function () {
+      const deck = generateDeck();
+      const hand = drawHand(deck);
+      displayHand(hand);
+    });
+  </script>
 </body>
 </html>
