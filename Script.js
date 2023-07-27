@@ -1,53 +1,43 @@
-// Define the Card object
+// Card object with value and suit properties
 function Card(value, suit) {
-  this.value = value;
-  this.suit = suit;
+    this.value = value;
+    this.suit = suit;
 }
 
-// Create an array of all unique cards in a deck
-const deck = [];
-const suits = ['Spades', 'Hearts', 'Diamonds', 'Clubs'];
-const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
+// Create an array of 52 Card objects representing a deck
+let deck = [];
+const suits = ['Hearts', 'Spades', 'Diamonds', 'Clubs'];
+const faceCards = ['Ace', 'Jack', 'Queen', 'King'];
 
-for (const suit of suits) {
-  for (const value of values) {
-    deck.push(new Card(value, suit));
-  }
-}
-
-// Function to randomly select 5 cards from the deck
-function drawHand() {
-  const hand = [];
-  const drawnIndexes = new Set();
-
-  while (hand.length < 5) {
-    const randomIndex = Math.floor(Math.random() * 52);
-    if (!drawnIndexes.has(randomIndex)) {
-      drawnIndexes.add(randomIndex);
-      hand.push(deck[randomIndex]);
+for (let suit of suits) {
+    for (let value = 2; value <= 10; value++) {
+        deck.push(new Card(value, suit));
     }
-  }
-
-  return hand;
+    for (let faceCard of faceCards) {
+        deck.push(new Card(faceCard, suit));
+    }
 }
 
-// Function to display the hand on the HTML page
-function displayHand(hand) {
-  const handDiv = document.getElementById('hand');
-  handDiv.innerHTML = '';
+// Function to draw 5 random cards from the deck
+function drawCards() {
+    let hand = [];
+    const cardContainer = document.getElementById('cardContainer');
 
-  for (const card of hand) {
-    const cardText = document.createElement('p');
-    cardText.textContent = `${card.value} of ${card.suit}`;
-    handDiv.appendChild(cardText);
-  }
+    // Clear the currently-displayed hand
+    cardContainer.innerHTML = '';
+
+    // Draw 5 random cards without reusing cards
+    while (hand.length < 5 && deck.length > 0) {
+        const randomIndex = Math.floor(Math.random() * deck.length);
+        const card = deck.splice(randomIndex, 1)[0];
+        hand.push(card);
+    }
+
+    // Display the drawn cards on the HTML page
+    for (let card of hand) {
+        const cardName = card.value === 'Ace' || card.value > 10 ? card.value : card.value + ' of';
+        const cardDiv = document.createElement('div');
+        cardDiv.textContent = cardName + ' ' + card.suit;
+        cardContainer.appendChild(cardDiv);
+    }
 }
-
-// Function to deal a new hand and display it
-function dealHand() {
-  const hand = drawHand();
-  displayHand(hand);
-}
-
-// Initial display of a hand when the page loads
-dealHand();
